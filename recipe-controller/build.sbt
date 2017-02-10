@@ -17,7 +17,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"               %%  "akka-actor"          % akkaV,
     "com.typesafe.akka"               %%  "akka-cluster"        % akkaV,
     "com.typesafe.akka"               %%  "akka-cluster-tools"  % akkaV,
-    "com.inocybe"                     %%  "cluster-lib"         % "1.02"
+    "com.inocybe"                     %%  "cluster-lib"         % "1.04"
   )
 }
 

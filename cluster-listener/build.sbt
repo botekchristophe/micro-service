@@ -20,7 +20,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"               %%  "akka-persistence"    % akkaV,
     "org.iq80.leveldb"                %   "leveldb"             % "0.7",
     "org.fusesource.leveldbjni"       %   "leveldbjni-all"      % "1.8",
-    "com.inocybe"                     %%  "cluster-lib"         % "1.02"
+    "com.inocybe"                     %%  "cluster-lib"         % "1.04"
   )
 }
     
