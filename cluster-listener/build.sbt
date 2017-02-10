@@ -4,7 +4,7 @@ version := "1.0"
 
 scalaVersion := "2.12.1"
 
-organization := "Inocybe Technologies"
+organization := "com.inocybe"
 
 scalacOptions := Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
 
@@ -19,7 +19,8 @@ libraryDependencies ++= {
     "com.typesafe.akka"               %%  "akka-cluster-tools"  % akkaV,
     "com.typesafe.akka"               %%  "akka-persistence"    % akkaV,
     "org.iq80.leveldb"                %   "leveldb"             % "0.7",
-    "org.fusesource.leveldbjni"       % "leveldbjni-all"        % "1.8"
+    "org.fusesource.leveldbjni"       %   "leveldbjni-all"      % "1.8",
+    "com.inocybe"                     %%  "cluster-lib"         % "1.02"
   )
 }
     
