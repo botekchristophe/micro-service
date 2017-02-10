@@ -123,6 +123,7 @@ class ClusterListener extends PersistentActor with ActorLogging {
     val unresolvedRequest = state.requests
       .map( request =>
         if(state.actors.keys.toList.containsSlice(request.roles)) {
+          log.info(s"Resolved a request for: ${request.roles.mkString("[", ", ", "]")}")
           request.requester ! resolve(request.roles)
           (request, true)
         } else {
@@ -134,6 +135,7 @@ class ClusterListener extends PersistentActor with ActorLogging {
   }
 
   private def addRequestAndCheck(request: ResolveRequest): Unit = {
+    log.info(s"Received a request for: ${request.roles.mkString("[", ", ", "]")}")
     state = state.copy(requests = state.requests.::(request))
     self ! CheckRequests
   }
