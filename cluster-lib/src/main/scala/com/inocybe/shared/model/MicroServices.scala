@@ -1,23 +1,20 @@
 package com.inocybe.shared.model
 
 object MicroServices {
-  sealed trait MicroService
-  case object ClusterListener extends MicroService
-  case object RecipeController extends MicroService
-  case object DbConnector extends MicroService
-  case object SonnarConnector extends MicroService
+  sealed abstract class MicroService(name: String) {
+    def roleName: String = this.name
+  }
 
-  /**
-    * Match an actor role as a String to its object.
-    *
-    * @param role actor role as [[String]].
-    * @return actor role as [[MicroService]]
-    */
-  def fromString(role: String): MicroService = {
-    role match {
+  case object ClusterListener extends MicroService("ClusterListener")
+  case object RecipeController extends MicroService("RecipeController")
+  case object Neo4jConnector extends MicroService("Neo4jConnector")
+  case object SonnarConnector extends MicroService("SonnarConnector")
+
+  def fromName(roleName: String): MicroService = {
+    roleName match {
       case "ClusterListener"  => ClusterListener
       case "RecipeController" => RecipeController
-      case "DbConnector"      => DbConnector
+      case "Neo4jConnector"   => Neo4jConnector
       case "SonnarConnector"  => SonnarConnector
     }
   }

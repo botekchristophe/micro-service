@@ -6,3 +6,11 @@ object DbConnector {
   case class UpdateVertex()
   case class DeleteVertex()
 }
+
+// create
+
+// Read
+
+// update
+
+// delete

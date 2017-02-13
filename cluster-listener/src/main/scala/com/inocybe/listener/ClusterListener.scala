@@ -12,6 +12,8 @@ import com.inocybe.shared.model.MicroServices.MicroService
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
+import scala.collection.JavaConverters._
+
 object ClusterListener {
   case object SaveState
   case object PrintState
@@ -31,6 +33,7 @@ class ClusterListener extends PersistentActor with ActorLogging {
   system.scheduler.schedule(0.milliseconds, 5.seconds, self, PrintState)
   system.scheduler.schedule(0.milliseconds, 5.seconds, self, SaveState)
   system.scheduler.schedule(0.milliseconds, 10.seconds, self, CheckRequests)
+
 
 
   override def persistenceId: String = "cference" //id doesnt matter here, it just needs to be unique
@@ -68,13 +71,17 @@ class ClusterListener extends PersistentActor with ActorLogging {
     */
   override def receiveCommand: Receive = {
     case SaveState                              => saveSnapshot(state)
-    case PrintState                             => println(state.actors.map {case (k,v) => k} .mkString("actors alive: [", ", ", "]"))
+    case PrintState                             =>
+      //println(cluster.state.getMembers.asScala.map(member => RootActorPath(member.address) / "user" / member.roles.head).mkString(" | "))
+      //println(state.actors.map {case (k,v) => k} .mkString("actors alive: [", ", ", "]"))
+      println(cluster.state.roleLeaderMap)
     case CheckActors                            => checkForActorsAlive()
     case CheckRequests                          => checkForRequests()
     case MemberUp(member)                       => addMember(member)
     case UnreachableMember(member)              => log.info("Member detected as unreachable: {}", member)
     case MemberRemoved(member, previousStatus)  => removeMember(member, previousStatus)
     case Resolve(actors: List[MicroService])    => addRequestAndCheck(ResolveRequest(actors, sender()))
+    case s: CurrentClusterState                 => log.info(s"cluster state: $s")
   }
 
 
