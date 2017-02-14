@@ -7,6 +7,7 @@ import com.inocybe.shared.model.MicroServices
 import com.inocybe.shared.model.MicroServices.MicroService
 
 import scala.concurrent.duration._
+import scala.util.Failure
 
 object Controller {
   case object ResolveConnectors
@@ -18,9 +19,8 @@ abstract class Controller(connectors: Set[MicroService] = Set.empty[MicroService
   val cluster = Cluster(system)
   import system.dispatcher
 
-  system.scheduler.schedule(0.milliseconds, 1.seconds, self, ResolveConnectors)
-  var clusterListener: ActorRef = null
-  var resolvedConnectors: Map[MicroService, ActorSelection] = Map.empty[MicroService, ActorSelection]
+  val resolveActors = system.scheduler.schedule(0.milliseconds, 5.seconds, self, ResolveConnectors)
+  var actors: Map[MicroService, ActorSelection] = Map.empty[MicroService, ActorSelection]
 
   def receive = unavailable
 
@@ -34,17 +34,25 @@ abstract class Controller(connectors: Set[MicroService] = Set.empty[MicroService
   def available: Receive = ???
 
   def resolveConnector: Unit = {
-    val names = connectors.map(_.roleName)
-    val availableConnector = cluster.state.allRoles.intersect(names)
+    actors = cluster.state.roleLeaderMap
+      .map {
+        case (roleName, optAddress) => (MicroServices.fromName(roleName), context.actorSelection(RootActorPath(optAddress.get) / "user" / roleName))}
+      .filter {
+        case (microservice, selection) => connectors.contains(microservice) }
 
-    if (availableConnector.size == names.size) {
-      resolvedConnectors = cluster.state.roleLeaderMap.map {
-        case (roleName, optAddress) => (MicroServices.fromName(roleName), context.actorSelection(RootActorPath(optAddress.get) / "user" / roleName))
-      }
+    if (connectors.forall(actors.keySet.contains)) {
       context.become(available)
-      log.info("Resolved all connectors. Becoming avaialable...")
+      log.info("Resolved all connectors. Switch context to available...")
     }
   }
 
+  def pingActors = {
+    actors.foreach {
+      case (k, v) =>
+        v.resolveOne(1.seconds).onComplete {
+          case Failure(e) => context.become(unavailable); log.warning(s"$k failed to be resolve. Switch context to unavailable.")
+      }
+    }
+  }
 }
 

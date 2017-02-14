@@ -5,14 +5,16 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.inocybe.recipe.service.RecipeService
+import com.inocybe.shared.model.MicroServices
 import com.typesafe.config.ConfigFactory
+
 import scala.concurrent.duration._
 
 object Main {
 
   def main(args: Array[String]): Unit = {
 
-    val conf = ConfigFactory.parseString(s"akka.cluster.roles=[RecipeController]").
+    val conf = ConfigFactory.parseString(s"akka.cluster.roles=[${MicroServices.RecipeController.roleName}]").
       withFallback(ConfigFactory.parseString("akka.remote.netty.tcp.port=0")).
       withFallback(ConfigFactory.load())
     implicit val system = ActorSystem("ClusterSystem", conf)
@@ -23,7 +25,7 @@ object Main {
 
     implicit val timeout = Timeout(15.seconds)
 
-    val controller = system.actorOf(Props[RecipeController], "RecipeController")
+    val controller = system.actorOf(Props[RecipeController], MicroServices.RecipeController.roleName)
     val service = new RecipeService(controller)
 
     Http().bindAndHandle(service.route, "localhost", 8888)
