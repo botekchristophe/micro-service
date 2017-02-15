@@ -20,7 +20,7 @@ class RecipeService(controller: ActorRef)(implicit timeout: Timeout) extends Ser
   val route: Route =
     get {
       pathPrefix("recipes") {
-        onComplete(controller ? "wertyuio"){//RecipeController.GetRecipes) {
+        onComplete(controller ? RecipeController.GetRecipes) {
           futureHandler
         }
       }

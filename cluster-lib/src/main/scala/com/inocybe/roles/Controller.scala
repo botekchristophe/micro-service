@@ -36,7 +36,7 @@ abstract class Controller(connectors: Set[MicroService] = Set.empty[MicroService
   def resolveConnector: Unit = {
     actors = cluster.state.roleLeaderMap
       .map {
-        case (roleName, optAddress) => (MicroServices.fromName(roleName), context.actorSelection(RootActorPath(optAddress.get) / "user" / roleName))}
+        case (roleName, optAddress) => (MicroServices.fromName(roleName), context.actorSelection(RootActorPath(optAddress.get) / "user" / roleName)) }
       .filter {
         case (microservice, selection) => connectors.contains(microservice) }
 

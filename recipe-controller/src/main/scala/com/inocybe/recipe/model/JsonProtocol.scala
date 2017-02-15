@@ -7,7 +7,7 @@ import spray.json.{DeserializationException, JsValue, RootJsonFormat, _}
 object JsonProtocol extends DefaultJsonProtocol with SprayJsonSupport {
 
   implicit val errorFormat = jsonFormat4(ErrorDetail)
-  implicit val recipeFormat = jsonFormat3(Recipe)
+  implicit val recipeFormat = jsonFormat14(Recipe)
 
   implicit object ModelObjectJsonFormat extends RootJsonFormat[ModelObject] {
 
