@@ -18,7 +18,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"               %%  "akka-actor"          % akkaV,
     "com.typesafe.akka"               %%  "akka-cluster"        % akkaV,
     "com.typesafe.akka"               %%  "akka-cluster-tools"  % akkaV,
-    "com.inocybe"                     %%  "cluster-lib"         % "1.09",
+    "com.inocybe"                     %%  "cluster-lib"         % "1.12",
     "com.typesafe.akka"               %%  "akka-http-spray-json"% akkaHTTPv,
     "com.typesafe.akka"               %%  "akka-http"           % akkaHTTPv,
     "com.typesafe.akka"               %%  "akka-http-core"      % akkaHTTPv,

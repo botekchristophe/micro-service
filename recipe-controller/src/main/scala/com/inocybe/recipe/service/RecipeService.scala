@@ -24,5 +24,26 @@ class RecipeService(controller: ActorRef)(implicit timeout: Timeout) extends Ser
           futureHandler
         }
       }
-    }
+    } ~
+      get {
+      pathPrefix("newrecipe") {
+        onComplete(controller ? RecipeController.NewEmptyRecipe) {
+          futureHandler
+        }
+      }
+    } ~
+      get {
+      pathPrefix("delete" / Segment) { recipeId =>
+        onComplete(controller ? RecipeController.DeleteRecipe(recipeId)) {
+          futureHandler
+        }
+      }
+    } ~
+      get {
+        pathPrefix("recipe" / Segment) { recipeId =>
+          onComplete(controller ? RecipeController.GetRecipe(recipeId)) {
+            futureHandler
+          }
+        }
+      }
 }

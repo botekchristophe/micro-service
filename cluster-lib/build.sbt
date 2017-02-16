@@ -1,6 +1,6 @@
 name := "cluster-lib"
 
-version := "1.09"
+version := "1.12"
 
 scalaVersion := "2.12.1"
 
